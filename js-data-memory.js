@@ -2,11 +2,11 @@
 // https://gist.github.com/jmdobry/f51c32746ca5f768c700
 
 var JSData  = require('js-data'),
-    Adapter = require('js-data-adapter').Adapter,
+    // Adapter = require('js-data-adapter').Adapter,
     Promise = require('any-promise');
 
 function MemoryAdapter(opts) {
-  Adapter.call(this,opts);
+  // Adapter.call(this,opts);
 
   var data = {};
 
@@ -33,6 +33,17 @@ function MemoryAdapter(opts) {
         resolve(attrs);
       });
     }
+  };
+
+  this.createMany = function( resource, props, options ) {
+    var p    = Promise.resolve(),
+        self = this;
+    Object.keys(props).forEach(function(key) {
+      p = p.then(function() {
+        return self.create(resource,props[key],options);
+      });
+    });
+    return p;
   };
 
   this.find = function (resource, id, options) {
@@ -101,18 +112,18 @@ function MemoryAdapter(opts) {
   };
 }
 
-MemoryAdapter.prototype = Object.create(Adapter.prototype, {
-  constructor: {
-    value       : MemoryAdapter,
-    enumerable  : false,
-    writable    : true,
-    configurable: true
-  }
-});
-
-Object.defineProperty(MemoryAdapter, '__super__', {
-  configurable: true,
-  value: Adapter
-})
+// MemoryAdapter.prototype = Object.create(Adapter.prototype, {
+//   constructor: {
+//     value       : MemoryAdapter,
+//     enumerable  : false,
+//     writable    : true,
+//     configurable: true
+//   }
+// });
+//
+// Object.defineProperty(MemoryAdapter, '__super__', {
+//   configurable: true,
+//   value: Adapter
+// })
 
 module.exports = MemoryAdapter;
