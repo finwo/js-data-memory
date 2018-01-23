@@ -73,7 +73,7 @@ function MemoryAdapter(opts) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
       JSData.DSUtils.deepMixIn(item, attrs);
-      return item;
+      return [item, {}];
     });
   };
 
@@ -93,7 +93,7 @@ function MemoryAdapter(opts) {
     return this.find(resource, id, options).then(function (item) {
       JSData.DSUtils.remove(data[resource.name].collection, item);
       delete data[resource.name].index[id];
-      return id;
+      return [id, {}];
     });
   };
 
