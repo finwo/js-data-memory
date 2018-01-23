@@ -91,7 +91,6 @@ function MemoryAdapter(opts) {
   this._destroy = function (resource, id, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
-      JSData.DSUtils.remove(data[resource.name].collection, item);
       delete data[resource.name].index[id];
       return [id, {}];
     });
