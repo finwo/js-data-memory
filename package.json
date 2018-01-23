@@ -1,0 +1,23 @@
+{
+  "name": "js-data-memory",
+  "version": "0.0.1",
+  "description": "In-memory adapter for js-data.",
+  "main": "./js-data-memory.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trackthis/js-data-memory.git"
+  },
+  "author": "Robin Bron <robin@finwo.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trackthis/js-data-memory/issues"
+  },
+  "homepage": "https://github.com/trackthis/js-data-memory#readme",
+  "dependencies": {
+    "js-data": "^3.0.1",
+    "native-or-bluebird": "^1.2.0"
+  }
+}
