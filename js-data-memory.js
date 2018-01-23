@@ -2,7 +2,8 @@
 // https://gist.github.com/jmdobry/f51c32746ca5f768c700
 
 var JSData  = require('js-data'),
-    Promise = require('native-or-bluebird');
+    Promise = require('any-promise'),
+    Query   = JSData.Query;
 
 function MemoryAdapter() {
   var data = {};
@@ -46,7 +47,14 @@ function MemoryAdapter() {
   this.findAll = function (resource, params, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
-      resolve(store.defaults.defaultFilter(data[resource.name].collection, resource.name, params, options));
+      var _query = new Query({
+        index: {
+          getAll: function() {
+            return data[resource.name].collection;
+          }
+        }
+      });
+      resolve(_query.filter(params).run());
     });
   };
 
