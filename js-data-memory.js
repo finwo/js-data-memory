@@ -2,10 +2,12 @@
 // https://gist.github.com/jmdobry/f51c32746ca5f768c700
 
 var JSData  = require('js-data'),
-    Promise = require('any-promise'),
-    Query   = JSData.Query;
+    Adapter = require('js-data-adapter').Adapter,
+    Promise = require('any-promise');
 
-function MemoryAdapter() {
+function MemoryAdapter(opts) {
+  Adapter.call(this,opts);
+
   var data = {};
 
   function addMetaForResource(resource) {
@@ -47,7 +49,7 @@ function MemoryAdapter() {
   this.findAll = function (resource, params, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
-      var _query = new Query({
+      var _query = new JSData.Query({
         index: {
           getAll: function() {
             return data[resource.name].collection;
@@ -98,5 +100,19 @@ function MemoryAdapter() {
     });
   };
 }
+
+MemoryAdapter.prototype = Object.create(Adapter.prototype, {
+  constructor: {
+    value       : MemoryAdapter,
+    enumerable  : false,
+    writable    : true,
+    configurable: true
+  }
+});
+
+Object.defineProperty(MemoryAdapter, '__super__', {
+  configurable: true,
+  value: Adapter
+})
 
 module.exports = MemoryAdapter;
