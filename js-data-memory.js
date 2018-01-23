@@ -6,7 +6,7 @@ var JSData  = require('js-data'),
     Promise = require('any-promise');
 
 function MemoryAdapter(opts) {
-  // Adapter.call(this,opts);
+  Adapter.call(this,opts);
 
   var data = {};
 
@@ -19,7 +19,7 @@ function MemoryAdapter(opts) {
     }
   }
 
-  this.create = function (resource, attrs, options) {
+  this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
       return this.update(resource, attrs[resource.idAttribute], attrs, options);
@@ -35,7 +35,7 @@ function MemoryAdapter(opts) {
     }
   };
 
-  this.createMany = function( resource, props, options ) {
+  this._createMany = function( resource, props, options ) {
     var p    = Promise.resolve(),
         self = this;
     Object.keys(props).forEach(function(key) {
@@ -46,7 +46,7 @@ function MemoryAdapter(opts) {
     return p;
   };
 
-  this.find = function (resource, id, options) {
+  this._find = function (resource, id, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
       if (data[resource.name].index[id]) {
@@ -57,7 +57,7 @@ function MemoryAdapter(opts) {
     });
   };
 
-  this.findAll = function (resource, params, options) {
+  this._findAll = function (resource, params, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
       var _query = new JSData.Query({
@@ -71,7 +71,7 @@ function MemoryAdapter(opts) {
     });
   };
 
-  this.update = function (resource, id, attrs, options) {
+  this._update = function (resource, id, attrs, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
       JSData.DSUtils.deepMixIn(item, attrs);
@@ -79,7 +79,7 @@ function MemoryAdapter(opts) {
     });
   };
 
-  this.updateAll = function (resource, params, attrs, options) {
+  this._updateAll = function (resource, params, attrs, options) {
     addMetaForResource(resource);
     return this.findAll(resource, params, options).then(function (items) {
       var tasks = [];
@@ -90,7 +90,7 @@ function MemoryAdapter(opts) {
     });
   };
 
-  this.destroy = function (resource, id, options) {
+  this._destroy = function (resource, id, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
       JSData.DSUtils.remove(data[resource.name].collection, item);
@@ -99,7 +99,7 @@ function MemoryAdapter(opts) {
     });
   };
 
-  this.destroyAll = function (resource, params, options) {
+  this._destroyAll = function (resource, params, options) {
     addMetaForResource(resource);
     var _this = this;
     return this.findAll(resource, params, options).then(function (items) {
@@ -112,18 +112,18 @@ function MemoryAdapter(opts) {
   };
 }
 
-// MemoryAdapter.prototype = Object.create(Adapter.prototype, {
-//   constructor: {
-//     value       : MemoryAdapter,
-//     enumerable  : false,
-//     writable    : true,
-//     configurable: true
-//   }
-// });
-//
-// Object.defineProperty(MemoryAdapter, '__super__', {
-//   configurable: true,
-//   value: Adapter
-// })
+MemoryAdapter.prototype = Object.create(Adapter.prototype, {
+  constructor: {
+    value       : MemoryAdapter,
+    enumerable  : false,
+    writable    : true,
+    configurable: true
+  }
+});
+
+Object.defineProperty(MemoryAdapter, '__super__', {
+  configurable: true,
+  value: Adapter
+})
 
 module.exports = MemoryAdapter;
