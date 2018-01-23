@@ -13,14 +13,12 @@ Credits to JDobry.
 ### Usage
 
 ```js
-var jsDataDataStore = require('js-data-memory');
+var MemoryAdapter = require('js-data-memory');
 
 /*
- *  Create an instance of DataStoreAdapter
+ *  Create an instance of the adapter
  */
-var adapter = new jsDataDataStore.DataStoreAdapter({config: {
-
-}});
+var adapter = new MemoryAdapter();
 
 /*
  *  Register the adapter instance
@@ -39,21 +37,15 @@ Start with the [JSData].
 ### Example
 
 ```js
-var jsData          = require('js-data');
-var jsDataDataStore = require('js-data-memory');
+var jsData        = require('js-data');
+var MemoryAdapter = require('js-data-memory');
 
 /*
  *  Optional
  */
 jsData.utils.Promise = require('bluebird');
 
-var config = {
-
-};
-
-var adapter = new jsDataDataStore.DataStoreAdapter({config: {
-
-}});
+var adapter = new MemoryAdapter();
 
 var container = new jsData.Container({ mapperDefaults: { } });
 
