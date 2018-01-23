@@ -2,7 +2,7 @@
 // https://gist.github.com/jmdobry/f51c32746ca5f768c700
 
 var JSData  = require('js-data'),
-    // Adapter = require('js-data-adapter').Adapter,
+    Adapter = require('js-data-adapter').Adapter,
     Promise = require('any-promise');
 
 function MemoryAdapter(opts) {
