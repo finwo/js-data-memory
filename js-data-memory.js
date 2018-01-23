@@ -6,7 +6,7 @@ var JSData  = require('js-data'),
     Promise = require('any-promise');
 
 function MemoryAdapter(opts) {
-  Adapter.call(this,opts);
+  Adapter.call(this, opts);
 
   var data = {};
 
@@ -15,7 +15,7 @@ function MemoryAdapter(opts) {
       data[resource.name]            = {};
       data[resource.name].curId      = 1;
       data[resource.name].index      = {};
-      data[resource.name].collection = {};
+      data[resource.name].collection = [];
     }
   }
 
@@ -30,27 +30,25 @@ function MemoryAdapter(opts) {
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);
       return new Promise(function (resolve, reject) {
-        resolve(attrs);
+        resolve([attrs, {}]);
       });
     }
   };
 
-  this._createMany = function( resource, props, options ) {
-    var p    = Promise.resolve(),
-        self = this;
-    Object.keys(props).forEach(function(key) {
-      p = p.then(function() {
-        return self.create(resource,props[key],options);
-      });
+  this._createMany = function (resource, props, options) {
+    var tasks = [],
+        self  = this;
+    Object.keys(props).forEach(function (key) {
+      tasks.push(self.create(resource, props[key], options))
     });
-    return p;
+    return Promise.all(tasks);
   };
 
   this._find = function (resource, id, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
       if (data[resource.name].index[id]) {
-        resolve(data[resource.name].index[id]);
+        resolve([data[resource.name].index[id], {}]);
       } else {
         reject('Not Found!');
       }
@@ -62,12 +60,12 @@ function MemoryAdapter(opts) {
     return new Promise(function (resolve, reject) {
       var _query = new JSData.Query({
         index: {
-          getAll: function() {
+          getAll: function () {
             return data[resource.name].collection;
           }
         }
       });
-      resolve(_query.filter(params).run());
+      resolve([_query.filter(params).run(), {}]);
     });
   };
 
@@ -104,7 +102,7 @@ function MemoryAdapter(opts) {
     var _this = this;
     return this.findAll(resource, params, options).then(function (items) {
       var tasks = [];
-      JSData.DSUtils.forEach(items, function (item) {
+      items.forEach(function (item) {
         tasks.push(_this.destroy(resource, item[resource.idAttribute], options));
       });
       return Promise.all(tasks);
@@ -123,7 +121,7 @@ MemoryAdapter.prototype = Object.create(Adapter.prototype, {
 
 Object.defineProperty(MemoryAdapter, '__super__', {
   configurable: true,
-  value: Adapter
+  value       : Adapter
 })
 
 module.exports = MemoryAdapter;
