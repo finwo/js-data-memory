@@ -10,6 +10,11 @@ function MemoryAdapter(opts) {
 
   var data = {};
 
+  /**
+   * In short: our database table structure
+   *
+   * @param resource
+   */
   function addMetaForResource(resource) {
     if (!(resource.name in data)) {
       data[resource.name]            = {};
@@ -19,6 +24,15 @@ function MemoryAdapter(opts) {
     }
   }
 
+  /**
+   * Create a record
+   *
+   * @param resource
+   * @param attrs
+   * @param options
+   * @returns {*}
+   * @private
+   */
   this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
@@ -35,6 +49,15 @@ function MemoryAdapter(opts) {
     }
   };
 
+  /**
+   * Create multiple records
+   *
+   * @param resource
+   * @param props
+   * @param options
+   * @returns {Promise<[any , ...]> | any}
+   * @private
+   */
   this._createMany = function (resource, props, options) {
     var tasks = [],
         self  = this;
@@ -44,6 +67,15 @@ function MemoryAdapter(opts) {
     return Promise.all(tasks);
   };
 
+  /**
+   * Find a single record by ID
+   *
+   * @param resource
+   * @param id
+   * @param options
+   * @returns {Promise | Promise<any>}
+   * @private
+   */
   this._find = function (resource, id, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
@@ -55,6 +87,15 @@ function MemoryAdapter(opts) {
     });
   };
 
+  /**
+   * Find multiple records
+   *
+   * @param resource
+   * @param params
+   * @param options
+   * @returns {Promise | Promise<any>}
+   * @private
+   */
   this._findAll = function (resource, params, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
@@ -69,6 +110,16 @@ function MemoryAdapter(opts) {
     });
   };
 
+  /**
+   * Update a single record by ID
+   *
+   * @param resource
+   * @param id
+   * @param attrs
+   * @param options
+   * @returns {Promise<any>}
+   * @private
+   */
   this._update = function (resource, id, attrs, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
@@ -77,6 +128,16 @@ function MemoryAdapter(opts) {
     });
   };
 
+  /**
+   * Update multiple records
+   *
+   * @param resource
+   * @param params
+   * @param attrs
+   * @param options
+   * @returns {Promise<any>}
+   * @private
+   */
   this._updateAll = function (resource, params, attrs, options) {
     addMetaForResource(resource);
     return this.findAll(resource, params, options).then(function (items) {
@@ -88,6 +149,15 @@ function MemoryAdapter(opts) {
     });
   };
 
+  /**
+   * Destroy a single record by ID
+   *
+   * @param resource
+   * @param id
+   * @param options
+   * @returns {Promise<any>}
+   * @private
+   */
   this._destroy = function (resource, id, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
@@ -96,6 +166,15 @@ function MemoryAdapter(opts) {
     });
   };
 
+  /**
+   * Destroy multiple records
+   *
+   * @param resource
+   * @param params
+   * @param options
+   * @returns {Promise<any>}
+   * @private
+   */
   this._destroyAll = function (resource, params, options) {
     addMetaForResource(resource);
     var _this = this;
