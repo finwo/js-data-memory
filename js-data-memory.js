@@ -40,8 +40,7 @@ function MemoryAdapter(opts) {
     } else {
       var id = data[resource.name].curId;
       data[resource.name].curId++;
-      console.log(resource);
-      console.log(resource)
+      // TODO: detect if 'id' has to be integer or string to prevent error validation
       attrs[resource.idAttribute]   = id.toString();
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);
