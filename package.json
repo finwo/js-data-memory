@@ -4,7 +4,8 @@
   "description": "In-memory adapter for js-data.",
   "main": "./js-data-memory.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha test/index.js",
+    "release": "npm test && node scripts/contributors.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
     "any-promise": "^1.3.0",
     "js-data": "^3.0.1",
     "js-data-adapter": "^0.8.5"
+  },
+  "devDependencies": {
+    "co-mocha": "^1.2.1"
   }
 }
