@@ -392,17 +392,18 @@ describe('\n\n ####### Mapper Functions #######', function () {
       assert.equal(chairs.length, localdb.chair.length);
     });
 
-    it('findAll guest with age between 30 and 35 loading hasMany[table][LocalKeys]', function* () {
+    it('findAll guest with age between 30 and 35 loading hasMany[table][LocalKeys], hasMany[log][foreignKey][custom_get] relation', function* () {
       var guests = yield store.findAll('guest', {
         where : {
           'age' : {'>=' : 30, '<=' : 35}
         }
-      }, {with : ['tables']});
+      }, {with : ['tables', 'logs']});
       assert.equal(guests.length, localdb.guest.filter(function (guest) {
         return guest.age >= 30 && guest.age <= 35;
       }).length);
       guests.forEach(function (guest) {
         assert.equal(guest.tables.length, _filter(guest.table_ids, localdb.table, 'id').length);
+        assert.equal(guest.logs.length, _filter('guest', _filter(guest.unique, localdb.log, 'owner_id'), 'owner_type').length);
       });
     });
 
@@ -415,7 +416,7 @@ describe('\n\n ####### Mapper Functions #######', function () {
       assert.equal(tables.length, _filter(3, localdb.table, 'max_chairs').length);
       tables.forEach(function (table) {
         assert.equal(table.chairs.length, _filter(table.id, localdb.chair, 'table_id').length);
-        assert.equal(table.log.length, _filter('table', _filter(table.id, localdb.log, 'owner_id'), 'owner_type').length);
+        assert.equal(table.logs.length, _filter('table', _filter(table.id, localdb.log, 'owner_id'), 'owner_type').length);
       });
     });
 
