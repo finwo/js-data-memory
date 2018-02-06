@@ -6,10 +6,10 @@ var JSData  = require('js-data'),
     Promise = require('any-promise');
 
 var unique = function unique(array) {
-  var seen = {};
+  var seen  = {};
   var final = [];
   array.forEach(function (item) {
-    if (item in seen) {
+    if ( item in seen ) {
       return;
     }
     final.push(item);
@@ -19,12 +19,12 @@ var unique = function unique(array) {
 };
 
 var defineProperty = function (obj, key, value) {
-  if (key in obj) {
+  if ( key in obj ) {
     Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
+      value        : value,
+      enumerable   : true,
+      configurable : true,
+      writable     : true
     });
   } else {
     obj[key] = value;
@@ -44,7 +44,7 @@ function MemoryAdapter(opts) {
    * @param resource
    */
   function addMetaForResource(resource) {
-    if (!(resource.name in data)) {
+    if ( !(resource.name in data) ) {
       data[resource.name]            = {};
       data[resource.name].curId      = 1;
       data[resource.name].index      = {};
@@ -63,7 +63,7 @@ function MemoryAdapter(opts) {
    */
   this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
-    if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
+    if ( attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert ) {
       return this.update(resource, attrs[resource.idAttribute], attrs, options);
     } else {
       var id = data[resource.name].curId;
@@ -93,9 +93,9 @@ function MemoryAdapter(opts) {
       tasks.push(self.create(resource, props[key], options))
     });
     return Promise.all(tasks)
-    .then(function(results) {
-      return [results, {}];
-    });
+      .then(function (results) {
+        return [results, {}];
+      });
   };
 
   /**
@@ -110,7 +110,7 @@ function MemoryAdapter(opts) {
   this._find = function (resource, id, options) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
-      if (data[resource.name].index[id]) {
+      if ( data[resource.name].index[id] ) {
         resolve([data[resource.name].index[id], {}]);
       } else {
         reject('Not Found!');
@@ -131,8 +131,8 @@ function MemoryAdapter(opts) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
       var _query = new JSData.Query({
-        index: {
-          getAll: function () {
+        index : {
+          getAll : function () {
             return data[resource.name].collection;
           }
         }
@@ -155,9 +155,9 @@ function MemoryAdapter(opts) {
     addMetaForResource(resource);
     var _this = this;
     return this.find(resource, id, options).then(function (item) {
-      if (attrs) {
-        for (var key in attrs) {
-          if (attrs[key] != undefined) {
+      if ( attrs ) {
+        for ( var key in attrs ) {
+          if ( attrs[key] != undefined ) {
             item[key] = attrs[key];
           }
         }
@@ -186,9 +186,9 @@ function MemoryAdapter(opts) {
         tasks.push(_this.update(resource, item[resource.idAttribute], attrs, options));
       });
       return Promise.all(tasks)
-      .then(function(results) {
-        return [results, {}];
-      });
+        .then(function (results) {
+          return [results, {}];
+        });
     });
   };
 
@@ -224,7 +224,7 @@ function MemoryAdapter(opts) {
   this._destroy = function (resource, id, options) {
     addMetaForResource(resource);
     return this.find(resource, id, options).then(function (item) {
-      delete data[resource.name].index[id]; 
+      delete data[resource.name].index[id];
       data[resource.name].collection = data[resource.name].collection.filter(function (item) {
         return item[resource.idAttribute] != id;
       });
@@ -250,32 +250,32 @@ function MemoryAdapter(opts) {
         tasks.push(_this.destroy(resource, item[resource.idAttribute], options));
       });
       return Promise.all(tasks)
-      .then(function(results) {
-        return [results, {}];
-      });
+        .then(function (results) {
+          return [results, {}];
+        });
     });
   };
 
   /**
    * load BelongsTo standard relations (foreignKey)
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} records 
-   * @param {*} ___opts 
+   *
+   * @param {*} mapper
+   * @param {*} def
+   * @param {*} records
+   * @param {*} ___opts
    */
   this.loadBelongsTo = function (mapper, def, records, __opts) {
-    var _this6 = this,
-    singular = false;
+    var _this6   = this,
+        singular = false;
 
-    if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
+    if ( JSData.utils.isObject(records) && !JSData.utils.isArray(records) ) {
       singular = true;
-      records = [records];
+      records  = [records];
     }
-    
+
     //check for custom relation functions
-    if (mapper.relations[def.type][def.relation].get) {
-  
+    if ( mapper.relations[def.type][def.relation].get ) {
+
       var p = [];
       records.forEach(function (record) {
         p.push(mapper.relations[def.type][def.relation].get({}, {}, record, {})
@@ -287,10 +287,10 @@ function MemoryAdapter(opts) {
       return Promise.all(p);
 
     } else {
-      
+
       var relationDef = def.getRelation();
 
-      if (singular) {
+      if ( singular ) {
         var record = records[0];
         return this.find(relationDef, this.makeBelongsToForeignKey(mapper, def, record), __opts).then(function (relatedItem) {
           def.setLocalField(record, relatedItem);
@@ -299,16 +299,16 @@ function MemoryAdapter(opts) {
         var keys = [];
         records.forEach(function (record) {
           var key = _this6.makeBelongsToForeignKey(mapper, def, record);
-          if (keys.indexOf(key) < 0) keys.push(key);
+          if ( keys.indexOf(key) < 0 ) keys.push(key);
         });
 
         var where = {};
-        if (keys.length > 1) where[relationDef.idAttribute] = { 'in': keys };
-        else                 where[relationDef.idAttribute] = { '==': keys.shift() };
+        if ( keys.length > 1 ) where[relationDef.idAttribute] = {'in' : keys};
+        else where[relationDef.idAttribute] = {'==' : keys.shift()};
         return this.findAll(relationDef, {where : where}, __opts).then(function (relatedItems) {
           records.forEach(function (record) {
             relatedItems.forEach(function (relatedItem) {
-              if (relatedItem[relationDef.idAttribute] === record[def.foreignKey]) {
+              if ( relatedItem[relationDef.idAttribute] === record[def.foreignKey] ) {
                 def.setLocalField(record, relatedItem);
               }
             });
@@ -320,28 +320,28 @@ function MemoryAdapter(opts) {
 
   /**
    * load HasMany standard relation (foreignKey)
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} records 
-   * @param {*} ___opts 
+   *
+   * @param {*} mapper
+   * @param {*} def
+   * @param {*} records
+   * @param {*} ___opts
    */
-  this.loadHasMany = function(mapper, def, records, __opts) {
+  this.loadHasMany = function (mapper, def, records, __opts) {
     var _this10  = this,
         singular = false;
 
-    if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
+    if ( JSData.utils.isObject(records) && !JSData.utils.isArray(records) ) {
       singular = true;
-      records = [records];
+      records  = [records];
     }
-    var IDs = records.map(function (record) {
+    var IDs      = records.map(function (record) {
       return _this10.makeHasManyForeignKey(mapper, def, record);
     });
-    var query = {
-      where: {}
+    var query    = {
+      where : {}
     };
     var criteria = query.where[def.foreignKey] = {};
-    if (singular) {
+    if ( singular ) {
       // more efficient query when we only have one record
       criteria['=='] = IDs[0];
     } else {
@@ -353,11 +353,11 @@ function MemoryAdapter(opts) {
       records.forEach(function (record) {
         var attached = [];
         // avoid unneccesary iteration when we only have one record
-        if (singular) {
+        if ( singular ) {
           attached = relatedItems;
         } else {
           relatedItems.forEach(function (relatedItem) {
-            if (JSData.utils.get(relatedItem, def.foreignKey) === record[mapper.idAttribute]) {
+            if ( JSData.utils.get(relatedItem, def.foreignKey) === record[mapper.idAttribute] ) {
               attached.push(relatedItem);
             }
           });
@@ -366,30 +366,30 @@ function MemoryAdapter(opts) {
       });
     });
   };
-  
+
   /**
    * load HasMany relation made by LocalKeys
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} records 
-   * @param {*} ___opts 
+   *
+   * @param {*} mapper
+   * @param {*} def
+   * @param {*} records
+   * @param {*} ___opts
    */
-  this.loadHasManyLocalKeys = function(mapper, def, records, __opts) {
+  this.loadHasManyLocalKeys = function (mapper, def, records, __opts) {
     var _this11       = this;
     var record        = void 0;
     var relatedMapper = def.getRelation();
 
-    if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
+    if ( JSData.utils.isObject(records) && !JSData.utils.isArray(records) ) {
       record = records;
     }
 
-    if (record) {
-      return _this11.findAll(relatedMapper, { 
-        where: defineProperty({}, relatedMapper.idAttribute, { 
-          'in': _this11.makeHasManyLocalKeys(mapper, def, record) 
-        }) 
-      }, __opts).then(function (relatedItems) { 
+    if ( record ) {
+      return _this11.findAll(relatedMapper, {
+        where : defineProperty({}, relatedMapper.idAttribute, {
+          'in' : _this11.makeHasManyLocalKeys(mapper, def, record)
+        })
+      }, __opts).then(function (relatedItems) {
         def.setLocalField(record, relatedItems);
       });
     } else {
@@ -397,19 +397,19 @@ function MemoryAdapter(opts) {
       records.forEach(function (record) {
         localKeys = localKeys.concat(_this11.makeHasManyLocalKeys(mapper, def, record));
       });
-      return this.findAll(relatedMapper, { 
-        where: defineProperty({}, relatedMapper.idAttribute, { 
-          'in': unique(localKeys).filter(function (x) { 
-            return x; 
-          }) 
-        }) 
-      }, __opts).then(function (relatedItems) { 
+      return this.findAll(relatedMapper, {
+        where : defineProperty({}, relatedMapper.idAttribute, {
+          'in' : unique(localKeys).filter(function (x) {
+            return x;
+          })
+        })
+      }, __opts).then(function (relatedItems) {
         records.forEach(function (item) {
           var attached = [];
           var itemKeys = JSData.utils.get(item, def.localKeys) || [];
-          itemKeys = JSData.utils.isArray(itemKeys) ? itemKeys : Object.keys(itemKeys);
+          itemKeys     = JSData.utils.isArray(itemKeys) ? itemKeys : Object.keys(itemKeys);
           relatedItems.forEach(function (relatedItem) {
-            if (itemKeys && itemKeys.indexOf(relatedItem[relatedMapper.idAttribute]) !== -1) {
+            if ( itemKeys && itemKeys.indexOf(relatedItem[relatedMapper.idAttribute]) !== -1 ) {
               attached.push(relatedItem);
             }
           });
@@ -419,132 +419,127 @@ function MemoryAdapter(opts) {
       });
     }
   };
-  
+
   /**
    * load HasMany relation made by ForeignKeys
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} records 
-   * @param {*} ___opts 
+   *
+   * @param {*} mapper
+   * @param {*} def
+   * @param {*} records
+   * @param {*} ___opts
    */
-  this.loadHasManyForeignKeys = function(mapper, def, records, __opts) {
+  this.loadHasManyForeignKeys = function (mapper, def, records, __opts) {
     var _this12 = this;
 
     var relatedMapper = def.getRelation();
     var idAttribute   = mapper.idAttribute;
     var record        = void 0;
 
-    if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
+    if ( JSData.utils.isObject(records) && !JSData.utils.isArray(records) ) {
       record = records;
     }
 
-    if (record) {
+    if ( record ) {
       return _this12.findAll(def.getRelation(), {
-        where: defineProperty({}, def.foreignKeys, {
-          'contains': _this12.makeHasManyForeignKeys(mapper, def, record)
+        where : defineProperty({}, def.foreignKeys, {
+          'contains' : _this12.makeHasManyForeignKeys(mapper, def, record)
         })
       }, __opts).then(function (relatedItems) {
         def.setLocalField(record, relatedItems);
       });
     } else {
-      return _this12.findAll(relatedMapper, {
-        where: defineProperty({}, def.foreignKeys, {
-          'isectNotEmpty': records.map(function (record) {
-            return _this12.makeHasManyForeignKeys(mapper, def, record);
-          })
-        })
-      }, __opts).then(function (relatedItems) {
-        var foreignKeysField = def.foreignKeys;
-        records.forEach(function (record) {
-          var _relatedItems = [];
-          var id = JSData.utils.get(record, idAttribute);
-          relatedItems.forEach(function (relatedItem) {
-            var foreignKeys = JSData.utils.get(relatedItems, foreignKeysField) || [];
-            if (foreignKeys.indexOf(id) !== -1) {
-              _relatedItems.push(relatedItem);
-            }
-          });
-          def.setLocalField(record, _relatedItems);
-        });
-      });
-    }
-  };
-  
-  /**
-   * load HasOne standard relation (foreignKey)
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} records 
-   * @param {*} ___opts 
-   */
-  this.loadHasOne = function(mapper, def, records, __opts) {
-    if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
-      records = [records];
-    }
-    return this.loadHasMany(mapper, def, records, __opts).then(function () {
+      var p = [];
       records.forEach(function (record) {
-        var relatedData = def.getLocalField(record);
-        if (JSData.utils.isArray(relatedData) && relatedData.length) {
-          def.setLocalField(record, relatedData[0]);
-        }
-      });
-    });
+        p.push(_this12.findAll(relatedMapper, {
+          where : defineProperty({}, def.foreignKeys, {
+            'contains' : _this12.makeHasManyForeignKeys(mapper, def, record)
+          })
+        }, __opts));
+      })
+      return Promise.all(p)
+        .then(function (relatedItems) {
+          var foreignKeysField = def.foreignKeys;
+          for ( var i in records ) {
+            def.setLocalField(records[i], relatedItems[i]);
+          }
+        });
+    }
   };
 
-  /**
-   * extract keys for HasMany relation made by foreignKeys
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} record 
-   */
-  this.makeHasManyForeignKey = function(mapper, def, record) {
-    return def.getForeignKey(record);
-  };
-  
-  /**
-   * extract keys for HasMany relations made by localKeys
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} record 
-   */
-  this.makeHasManyLocalKeys = function(mapper, def, record) {
-    var localKeys = [];
-    var itemKeys  = JSData.utils.get(record, def.localKeys) || [];
-    itemKeys  = JSData.utils.isArray(itemKeys) ? itemKeys : Object.keys(itemKeys);
-    localKeys = localKeys.concat(itemKeys);
-    return unique(localKeys).filter(function (x) {
-      return x;
+/**
+ * load HasOne standard relation (foreignKey)
+ *
+ * @param {*} mapper
+ * @param {*} def
+ * @param {*} records
+ * @param {*} ___opts
+ */
+this.loadHasOne = function (mapper, def, records, __opts) {
+  if ( JSData.utils.isObject(records) && !JSData.utils.isArray(records) ) {
+    records = [records];
+  }
+  return this.loadHasMany(mapper, def, records, __opts).then(function () {
+    records.forEach(function (record) {
+      var relatedData = def.getLocalField(record);
+      if ( JSData.utils.isArray(relatedData) && relatedData.length ) {
+        def.setLocalField(record, relatedData[0]);
+      }
     });
-  };
+  });
+};
 
-  /**
-   * extract key for BelongsTo relation
-   * 
-   * @param {*} mapper 
-   * @param {*} def 
-   * @param {*} record 
-   */
-  this.makeBelongsToForeignKey = function(mapper, def, record) {
-    return def.getForeignKey(record);
-  };
+/**
+ * extract keys for HasMany relation made by foreignKeys
+ *
+ * @param {*} mapper
+ * @param {*} def
+ * @param {*} record
+ */
+this.makeHasManyForeignKey = function (mapper, def, record) {
+  return def.getForeignKey(record);
+};
+
+/**
+ * extract keys for HasMany relations made by localKeys
+ *
+ * @param {*} mapper
+ * @param {*} def
+ * @param {*} record
+ */
+this.makeHasManyLocalKeys = function (mapper, def, record) {
+  var localKeys = [];
+  var itemKeys  = JSData.utils.get(record, def.localKeys) || [];
+  itemKeys      = JSData.utils.isArray(itemKeys) ? itemKeys : Object.keys(itemKeys);
+  localKeys     = localKeys.concat(itemKeys);
+  return unique(localKeys).filter(function (x) {
+    return x;
+  });
+};
+
+/**
+ * extract key for BelongsTo relation
+ *
+ * @param {*} mapper
+ * @param {*} def
+ * @param {*} record
+ */
+this.makeBelongsToForeignKey = function (mapper, def, record) {
+  return def.getForeignKey(record);
+};
 }
 
 MemoryAdapter.prototype = Object.create(Adapter.prototype, {
-  constructor: {
-    value       : MemoryAdapter,
-    enumerable  : false,
-    writable    : true,
-    configurable: true
+  constructor : {
+    value        : MemoryAdapter,
+    enumerable   : false,
+    writable     : true,
+    configurable : true
   }
 });
 
 Object.defineProperty(MemoryAdapter, '__super__', {
-  configurable: true,
-  value       : Adapter
+  configurable : true,
+  value        : Adapter
 })
 
 module.exports = MemoryAdapter;
