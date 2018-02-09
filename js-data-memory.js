@@ -67,7 +67,7 @@ function MemoryAdapter(opts) {
       return this.update(resource, attrs[resource.idAttribute], attrs, options);
     } else {
       var id;
-      if (attrs[resource.idAttribute]) {
+      if (attrs[resource.idAttribute] && !data[resource.name].index[id]) {
         id = attrs[resource.idAttribute];
       } else {
         id = data[resource.name].curId;
