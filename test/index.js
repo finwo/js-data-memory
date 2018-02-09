@@ -98,8 +98,8 @@ describe('\n\n ####### store configuration #######', function() {
     // Register all schemas
     Object.keys(schemas).forEach(function (schemaName) {
       var configuration = {
-        schema    : new Schema(schemas[schemaName].schema),
-        relations : schemas[schemaName].relations
+        schema    : new Schema(schemas[schemaName].schema) || {},
+        relations : schemas[schemaName].relations || {}
       };
       if (schemas[schemaName].idAttribute) configuration.idAttribute = schemas[schemaName].idAttribute;
       store.defineMapper(schemaName, configuration);
@@ -176,6 +176,20 @@ describe('\n\n ####### Mapper Functions #######', function () {
       assert.notEqual(guest.unique, undefined);
       assert.notEqual(guest.tables, undefined);
       assert.equal(guest.tables.length, _filter(db.guest[2].table_ids, db.table, 'code').length);
+    });
+
+    it('create 1 examp with custom idAttribute already filled', function* () {
+      var tmp_example = JSON.parse(JSON.stringify(localdb.example[0]));
+      var example     = yield store.create('example', tmp_example);
+      console.log(JSON.stringify(example))
+      assert.equal(example.unique, localdb.example[0].unique);
+    });
+
+    it('create 1 examp with custom idAttribute already filled but equal to an existing unique', function* () {
+      var tmp_example = JSON.parse(JSON.stringify(localdb.example[1]));
+      var example     = yield store.create('example', tmp_example);
+      console.log(JSON.stringify(example))
+      assert.notEqual(example.unique, localdb.example[1].unique);
     });
 
   });
