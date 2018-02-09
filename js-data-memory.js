@@ -66,9 +66,14 @@ function MemoryAdapter(opts) {
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
       return this.update(resource, attrs[resource.idAttribute], attrs, options);
     } else {
-      var id = data[resource.name].curId;
-      data[resource.name].curId++;
-      attrs[resource.idAttribute]   = id.toString();
+      var id;
+      if (attrs[resource.idAttribute]) {
+        id = attrs[resource.idAttribute];
+      } else {
+        id = data[resource.name].curId;
+        data[resource.name].curId++;
+        attrs[resource.idAttribute] = id.toString();
+      }
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);
       return new Promise(function (resolve, reject) {
