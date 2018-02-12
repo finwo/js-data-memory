@@ -1,3 +1,6 @@
 build:
   environment:
     node: '8.9.4'
+  test:
+    override:
+      - npm test
