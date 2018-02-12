@@ -501,6 +501,8 @@ function MemoryAdapter(opts) {
         var relatedData = def.getLocalField(record);
         if (JSData.utils.isArray(relatedData) && relatedData.length) {
           def.setLocalField(record, relatedData[0]);
+        } else {
+          def.setLocalField(record, undefined);
         }
       });
     });
