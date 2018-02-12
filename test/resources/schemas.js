@@ -1,5 +1,5 @@
 module.exports = {
-  table : {
+  table   : {
     schema: {
       title           : 'table',
       type            : 'object',
@@ -42,7 +42,7 @@ module.exports = {
       }
     }
   },
-  chair : {
+  chair   : {
     schema: {
       title           : 'chair',
       type            : 'object',
@@ -89,7 +89,7 @@ module.exports = {
       }
     }
   },
-  guest : {
+  guest   : {
     schema: {
       title           : 'guest',
       type            : 'object',
@@ -145,7 +145,7 @@ module.exports = {
     idAttribute     : 'unique',
     idType          : 'string',
   },
-  log   : {
+  log     : {
     schema: {
       title           : 'log',
       type            : 'object',
@@ -171,8 +171,18 @@ module.exports = {
       }
     }
   },
-  owner : {
-    schema : {},
-    relations : {}
+  owner   : {
+  },
+  example : {
+    schema : {
+      title      : 'example',
+      type       : 'object',
+      properties : {
+        unique : { type : 'string' },
+        value  : { type : 'string' },
+      }
+    },
+    idAttribute : 'unique',
+    idType      : 'string',
   }
 };

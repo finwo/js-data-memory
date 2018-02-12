@@ -94,5 +94,17 @@ module.exports = {
       owner_id   : 'guest4',
       owner_type : 'guest'
     }
+  ],
+  example : [
+    {
+      unique : 'unique_value',
+      value  : 'test1'
+    },{
+      unique : 'unique_value',
+      value  : 'test2'
+    },{
+      unique : 'unique_value',
+      value  : 'test3'
+    }
   ]
 };
