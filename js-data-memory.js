@@ -72,7 +72,11 @@ function MemoryAdapter(opts) {
       } else {
         id = data[resource.name].curId;
         data[resource.name].curId++;
-        attrs[resource.idAttribute] = id.toString();
+        if (resource.schema.properties[resource.idAttribute].type === 'number') {
+          attrs[resource.idAttribute] = Number(id, 10);
+        } else {
+          attrs[resource.idAttribute] = id.toString();
+        }
       }
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);
