@@ -1,6 +1,9 @@
 build:
   environment:
     node: '8.9.4'
-  test:
+  tests:
     override:
       - npm test
+checks:
+  javascript:
+    code_rating: true
