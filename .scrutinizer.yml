@@ -6,3 +6,4 @@ build:
       - npm test
 checks:
   javascript: true
+  code_rating: true
