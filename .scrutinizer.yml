@@ -3,7 +3,10 @@ build:
     node: '8.9.4'
   tests:
     override:
-      - npm test
+      - command: 'npm test'
+        coverage:
+          file: 'coverage/clover.xml'
+          format: 'clover'
 checks:
   javascript:
     code_rating: true

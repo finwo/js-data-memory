@@ -1,6 +1,12 @@
 
 <img src="https://raw.githubusercontent.com/js-data/js-data/master/js-data.png" alt="js-data logo" title="js-data" align="right" width="96" height="96" />
 
+[![npm](https://img.shields.io/npm/v/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
+[![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![npm](https://img.shields.io/npm/l/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
+
 # js-data-memory
 
 An in-memory adapter for the JSData Node.js ORM.
