@@ -5,5 +5,5 @@ build:
     override:
       - npm test
 checks:
-  javascript: true
-  code_rating: true
+  javascript:
+    code_rating: true
