@@ -5,7 +5,7 @@
 [![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
 [![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
-[![npm](https://img.shields.io/npm/v/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
+[![npm](https://img.shields.io/npm/l/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
 
 # js-data-memory
 
