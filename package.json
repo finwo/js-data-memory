@@ -4,8 +4,7 @@
   "description": "In-memory adapter for js-data.",
   "main": "./js-data-memory.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/index.js",
-    "release": "npm test && node scripts/contributors.js"
+    "test": "./node_modules/.bin/mocha test/index.js"
   },
   "repository": {
     "type": "git",
