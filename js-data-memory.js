@@ -72,7 +72,8 @@ function MemoryAdapter(opts) {
       } else {
         id = data[resource.name].curId;
         data[resource.name].curId++;
-        if (resource.schema.properties[resource.idAttribute].type === 'number') {
+        if (resource.schema && resource.schema.properties && resource.schema.properties[resource.idAttribute]
+            && resource.schema.properties[resource.idAttribute].type === 'number') {
           attrs[resource.idAttribute] = Number(id, 10);
         } else {
           attrs[resource.idAttribute] = id.toString();
