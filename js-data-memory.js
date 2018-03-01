@@ -64,7 +64,7 @@ function MemoryAdapter(opts) {
   this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
-      return this.update(resource, attrs[resource.idAttribute], attrs, options);
+      return this._update(resource, attrs[resource.idAttribute], attrs, options);
     } else {
       var id;
       if (attrs[resource.idAttribute] && !data[resource.name].index[attrs[resource.idAttribute]]) {
