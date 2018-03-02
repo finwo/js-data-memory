@@ -190,7 +190,6 @@ describe('\n\n ####### Mapper Functions #######', function () {
       /** global: store */
       var tmp_example = JSON.parse(JSON.stringify(localdb.example[0]));
       var example     = yield store.create('example', tmp_example);
-      console.log(JSON.stringify(example))
       assert.equal(example.unique, localdb.example[0].unique);
     });
 
@@ -198,7 +197,6 @@ describe('\n\n ####### Mapper Functions #######', function () {
       /** global: store */
       var tmp_example = JSON.parse(JSON.stringify(localdb.example[1]));
       var example     = yield store.create('example', tmp_example);
-      console.log(JSON.stringify(example))
       assert.notEqual(example.unique, localdb.example[1].unique);
     });
 
@@ -706,7 +704,7 @@ describe('\n\n ####### Mapper Functions #######', function () {
       tables.forEach(function (table) {
         table.max_chairs = 1;
       });
-      var tables_updated = yield store.updateMany('table', tables, {});
+      yield store.updateMany('table', tables, {});
       var check          = yield store.findAll('table', {
         where : {
           'max_chairs' : {'==' : 1}
@@ -727,7 +725,7 @@ describe('\n\n ####### Mapper Functions #######', function () {
       guests.forEach(function (guest) {
         guest.age = 15;
       });
-      var guests_updated = yield store.updateMany('guest', guests, {});
+      yield store.updateMany('guest', guests, {});
       var check          = yield store.findAll('guest', {
         where : {
           'age' : {'in' : [29, 30, 31]}
