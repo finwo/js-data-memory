@@ -1,11 +1,10 @@
 {
   "name": "js-data-memory",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "In-memory adapter for js-data.",
   "main": "./js-data-memory.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/index.js",
-    "release": "npm test && node scripts/contributors.js"
+    "test": "./node_modules/.bin/nyc ./node_modules/.bin/mocha test/index.js && ./node_modules/.bin/nyc report --reporter=clover"
   },
   "repository": {
     "type": "git",
@@ -23,6 +22,8 @@
     "js-data-adapter": "^0.8.5"
   },
   "devDependencies": {
-    "co-mocha": "^1.2.1"
+    "clover": "0.0.1",
+    "co-mocha": "^1.2.1",
+    "nyc": "^11.4.1"
   }
 }

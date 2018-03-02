@@ -64,7 +64,7 @@ function MemoryAdapter(opts) {
   this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
-      return this.update(resource, attrs[resource.idAttribute], attrs, options);
+      return this._update(resource, attrs[resource.idAttribute], attrs, options);
     } else {
       var id;
       if (attrs[resource.idAttribute] && !data[resource.name].index[attrs[resource.idAttribute]]) {
@@ -72,7 +72,12 @@ function MemoryAdapter(opts) {
       } else {
         id = data[resource.name].curId;
         data[resource.name].curId++;
-        attrs[resource.idAttribute] = id.toString();
+        if (resource.schema && resource.schema.properties && resource.schema.properties[resource.idAttribute]
+            && resource.schema.properties[resource.idAttribute].type === 'number') {
+          attrs[resource.idAttribute] = Number(id, 10);
+        } else {
+          attrs[resource.idAttribute] = id.toString();
+        }
       }
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);

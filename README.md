@@ -1,6 +1,12 @@
 
 <img src="https://raw.githubusercontent.com/js-data/js-data/master/js-data.png" alt="js-data logo" title="js-data" align="right" width="96" height="96" />
 
+[![npm](https://img.shields.io/npm/v/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
+[![Scrutinizer Build](https://img.shields.io/scrutinizer/build/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/trackthis/js-data-memory.svg?style=flat-square)](https://scrutinizer-ci.com/g/trackthis/js-data-memory/)
+[![npm](https://img.shields.io/npm/l/js-data-memory.svg?style=flat-square)](https://npmjs.com/package/js-data-memory/)
+
 # js-data-memory
 
 An in-memory adapter for the JSData Node.js ORM.
@@ -28,7 +34,7 @@ store.registerAdapter('memory', adapter, { default: true });
 
 ### JSData Tutorial
 
-Start with the [JSData].
+Start with the [JSData](http://api.js-data.io/js-data/).
 
 ### License
 
@@ -81,3 +87,15 @@ container
         res.send('ERROR<br>' + JSON.stringify(error));
     });
 ```
+
+### Contributors
+
+Please look at [the github contributors page](https://github.com/trackthis/js-data-memory/graphs/contributors) for the most recent information.
+
+### Bug reporting
+
+First, look at the [issues page](https://github.com/trackthis/js-data-memory/issues) to ensure your issue isn't already known. If it's not, you can create a new issue with a detailed description of what happened & how to reproduce the unexpected behavior.
+
+### Contributing
+
+If you decide to take on the challenge of fixing a known (or unknown) issue, you can do so by sending in a pull request from your own fork of the project. Once it has been tested (manually for now) and approved, it will be merged into the master branch of the repository.
