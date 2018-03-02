@@ -103,7 +103,9 @@ describe('\n\n ####### store configuration #######', function() {
         schema    : new Schema(schemas[schemaName].schema) || {},
         relations : schemas[schemaName].relations || {}
       };
-      if (schemas[schemaName].idAttribute) configuration.idAttribute = schemas[schemaName].idAttribute;
+      if (schemas[schemaName].idAttribute) {
+        configuration.idAttribute = schemas[schemaName].idAttribute;
+      }
       store.defineMapper(schemaName, configuration);
     });
     assert.notEqual(store, false);
