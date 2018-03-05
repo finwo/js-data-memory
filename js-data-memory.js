@@ -2,8 +2,7 @@
 // https://gist.github.com/jmdobry/f51c32746ca5f768c700
 
 var JSData  = require('js-data'),
-    Adapter = require('js-data-adapter').Adapter,
-    Promise = require('any-promise');
+    Adapter = require('js-data-adapter').Adapter;
 
 var unique = function (array) {
   var seen = {};
@@ -64,7 +63,7 @@ function MemoryAdapter(opts) {
   this._create = function (resource, attrs, options) {
     addMetaForResource(resource);
     if (attrs[resource.idAttribute] && data[resource.name].index[attrs[resource.idAttribute]] && options.upsert) {
-      return this._update(resource, attrs[resource.idAttribute], attrs, options);
+      return this._update(resource, attrs[resource.idAttribute], attrs);
     } else {
       var id;
       if (attrs[resource.idAttribute] && !data[resource.name].index[attrs[resource.idAttribute]]) {
@@ -81,7 +80,7 @@ function MemoryAdapter(opts) {
       }
       data[resource.name].index[id] = attrs;
       data[resource.name].collection.push(attrs);
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         resolve([attrs, {}]);
       });
     }
@@ -92,15 +91,14 @@ function MemoryAdapter(opts) {
    *
    * @param resource
    * @param props
-   * @param options
    * @returns {Promise<[any , ...]> | any}
    * @private
    */
-  this._createMany = function (resource, props, options) {
+  this._createMany = function (resource, props) {
     var tasks = [],
         self  = this;
     Object.keys(props).forEach(function (key) {
-      tasks.push(self.create(resource, props[key], options))
+      tasks.push(self.create(resource, props[key]))
     });
     return Promise.all(tasks)
     .then(function(results) {
@@ -113,11 +111,10 @@ function MemoryAdapter(opts) {
    *
    * @param resource
    * @param id
-   * @param options
    * @returns {Promise | Promise<any>}
    * @private
    */
-  this._find = function (resource, id, options) {
+  this._find = function (resource, id) {
     addMetaForResource(resource);
     return new Promise(function (resolve, reject) {
       if (data[resource.name].index[id]) {
@@ -133,13 +130,12 @@ function MemoryAdapter(opts) {
    *
    * @param resource
    * @param params
-   * @param options
    * @returns {Promise | Promise<any>}
    * @private
    */
-  this._findAll = function (resource, params, options) {
+  this._findAll = function (resource, params) {
     addMetaForResource(resource);
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       var _query = new JSData.Query({
         index: {
           getAll: function () {
@@ -157,20 +153,18 @@ function MemoryAdapter(opts) {
    * @param resource
    * @param id
    * @param attrs
-   * @param options
    * @returns {Promise<any>}
    * @private
    */
-  this._update = function (resource, id, attrs, options) {
+  this._update = function (resource, id, attrs) {
     addMetaForResource(resource);
-    var _this = this;
-    return this.find(resource, id, options).then(function (item) {
+    return this.find(resource, id).then(function (item) {
       if (attrs) {
-        for (var key in attrs) {
+        Object.keys(attrs).forEach(function(key) {
           if (attrs[key] != undefined) {
             item[key] = attrs[key];
           }
-        }
+        });
         data[resource.name].index[id] = item;
       }
       return [item, {}];
@@ -181,19 +175,18 @@ function MemoryAdapter(opts) {
    * Update multiple records after searching for them
    *
    * @param resource
-   * @param params
    * @param attrs
-   * @param options
+   * @param params
    * @returns {Promise<any>}
    * @private
    */
-  this._updateAll = function (resource, attrs, params, options) {
+  this._updateAll = function (resource, attrs, params) {
     addMetaForResource(resource);
     var _this = this;
-    return this.findAll(resource, params, options).then(function (items) {
+    return this.findAll(resource, params).then(function (items) {
       var tasks = [];
       items.forEach(function (item) {
-        tasks.push(_this.update(resource, item[resource.idAttribute], attrs, options));
+        tasks.push(_this.update(resource, item[resource.idAttribute], attrs));
       });
       return Promise.all(tasks)
       .then(function(results) {
@@ -206,18 +199,16 @@ function MemoryAdapter(opts) {
    * Update multiple records
    *
    * @param resource
-   * @param params
-   * @param attrs
-   * @param options
+   * @param records
    * @returns {Promise<any>}
    * @private
    */
-  this._updateMany = function (resource, records, options) {
+  this._updateMany = function (resource, records) {
     addMetaForResource(resource);
     var _this = this;
     var tasks = [];
     records.forEach(function (record) {
-      tasks.push(_this.update(resource, record[resource.idAttribute], record, options));
+      tasks.push(_this.update(resource, record[resource.idAttribute], record));
     });
     return Promise.all(tasks);
   };
@@ -227,19 +218,26 @@ function MemoryAdapter(opts) {
    *
    * @param resource
    * @param id
-   * @param options
    * @returns {Promise<any>}
    * @private
    */
-  this._destroy = function (resource, id, options) {
+  this._destroy = function (resource, id) {
     addMetaForResource(resource);
-    return this.find(resource, id, options).then(function (item) {
-      delete data[resource.name].index[id]; 
-      data[resource.name].collection = data[resource.name].collection.filter(function (item) {
-        return item[resource.idAttribute] != id;
+    try {
+      return this.find(resource, id).then(function (record) {
+        if (record) {
+          delete data[resource.name].index[id]; 
+          data[resource.name].collection = data[resource.name].collection.filter(function (item) {
+            return item[resource.idAttribute] != id;
+          });
+          return [id, {}];
+        } else {
+          return [false, {}];
+        }
       });
-      return [id, {}];
-    });
+    } catch (err) {
+      return [false, {}];
+    }
   };
 
   /**
@@ -247,17 +245,16 @@ function MemoryAdapter(opts) {
    *
    * @param resource
    * @param params
-   * @param options
    * @returns {Promise<any>}
    * @private
    */
-  this._destroyAll = function (resource, params, options) {
+  this._destroyAll = function (resource, params) {
     addMetaForResource(resource);
     var _this = this;
-    return this.findAll(resource, params, options).then(function (items) {
+    return this.findAll(resource, params).then(function (items) {
       var tasks = [];
       items.forEach(function (item) {
-        tasks.push(_this.destroy(resource, item[resource.idAttribute], options));
+        tasks.push(_this.destroy(resource, item[resource.idAttribute]));
       });
       return Promise.all(tasks)
       .then(function(results) {
@@ -272,7 +269,7 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadBelongsTo = function (mapper, def, records, __opts) {
     var _this6 = this,
@@ -339,7 +336,7 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasMany = function(mapper, def, records, __opts) {
     var _this10  = this,
@@ -401,11 +398,11 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasManyLocalKeys = function(mapper, def, records, __opts) {
     var _this11       = this;
-    var record        = void 0;
+    var record        = false;
     var relatedMapper = def.getRelation();
 
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
@@ -454,14 +451,13 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasManyForeignKeys = function(mapper, def, records, __opts) {
     var _this12 = this;
 
     var relatedMapper = def.getRelation();
-    var idAttribute   = mapper.idAttribute;
-    var record        = void 0;
+    var record        = false;
 
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
       record = records;
@@ -486,10 +482,9 @@ function MemoryAdapter(opts) {
       })
       return Promise.all(p)
       .then(function (relatedItems) {
-        var foreignKeysField = def.foreignKeys;
-        for ( var i in records ) {
-          def.setLocalField(records[i], relatedItems[i]);
-        }
+        records.forEach(function(record, i) {
+          def.setLocalField(record, relatedItems[i]);
+        });
       });
     }
   };
@@ -500,7 +495,7 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasOne = function(mapper, def, records, __opts) {
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
