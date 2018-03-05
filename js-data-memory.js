@@ -5,7 +5,7 @@ var JSData  = require('js-data'),
     Adapter = require('js-data-adapter').Adapter,
     Promise = require('any-promise');
 
-var unique = function unique(array) {
+var unique = function (array) {
   var seen = {};
   var final = [];
   array.forEach(function (item) {
@@ -309,12 +309,17 @@ function MemoryAdapter(opts) {
         var keys = [];
         records.forEach(function (record) {
           var key = _this6.makeBelongsToForeignKey(mapper, def, record);
-          if (keys.indexOf(key) < 0) keys.push(key);
+          if (keys.indexOf(key) < 0) {
+            keys.push(key);
+          }
         });
 
         var where = {};
-        if (keys.length > 1) where[relationDef.idAttribute] = { 'in': keys };
-        else                 where[relationDef.idAttribute] = { '==': keys.shift() };
+        if (keys.length > 1) {
+          where[relationDef.idAttribute] = { 'in': keys };
+        } else {
+          where[relationDef.idAttribute] = { '==': keys.shift() };
+        }
         return this.findAll(relationDef, {where : where}, __opts).then(function (relatedItems) {
           records.forEach(function (record) {
             relatedItems.forEach(function (relatedItem) {
