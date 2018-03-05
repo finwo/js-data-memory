@@ -22,7 +22,8 @@ module.exports = {
         log : {
           localField : 'logs',
           foreignKey : 'owner_id',
-          load       : function (Table, relationDef, table, options) {
+          load       : function (Table, relationDef, table) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : table.id},
@@ -30,7 +31,8 @@ module.exports = {
               }
             });
           },
-          get        : function (Table, relationDef, table, origGetter) {
+          get        : function (Table, relationDef, table) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : table.id},
@@ -69,7 +71,8 @@ module.exports = {
         log : {
           localField : 'logs',
           foreignKey : 'owner_id',
-          load       : function (Chair, relationDef, chair, options) {
+          load       : function (Chair, relationDef, chair) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : chair.id},
@@ -77,7 +80,8 @@ module.exports = {
               }
             });
           },
-          get        : function (Chair, relationDef, chair, origGetter) {
+          get        : function (Chair, relationDef, chair) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : chair.id},
@@ -123,7 +127,8 @@ module.exports = {
         log : {
           localField : 'logs',
           foreignKey : 'owner_id',
-          load       : function (Guest, relationDef, guest, options) {
+          load       : function (Guest, relationDef, guest) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : guest.unique},
@@ -131,7 +136,8 @@ module.exports = {
               }
             });
           },
-          get        : function (Guest, relationDef, guest, origGetter) {
+          get        : function (Guest, relationDef, guest) {
+            /** global: store */
             return store.findAll('log', {
               where : {
                 owner_id   : {'==' : guest.unique},
@@ -161,10 +167,12 @@ module.exports = {
         owner : {
           localField : 'owner',
           foreignKey : 'owner_id',
-          load       : function (Log, relationDef, log, options) {
+          load       : function (Log, relationDef, log) {
+            /** global: store */
             return store.find(log.owner_type, log.owner_id);
           },
-          get        : function (Log, relationDef, log, origGetter) {
+          get        : function (Log, relationDef, log) {
+            /** global: store */
             return store.find(log.owner_type, log.owner_id);
           }
         }
