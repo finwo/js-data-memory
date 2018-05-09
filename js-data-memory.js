@@ -165,11 +165,11 @@ function MemoryAdapter(opts) {
     var self = this;
     return this.find(resource, id, options).then(function (item) {
       if (attrs) {
-        for (var key in attrs) {
+        Object.keys(attrs).forEach(function(key) {
           if (attrs[key] != undefined) {
             item[key] = attrs[key];
           }
-        }
+        });
         data[resource.name].index[id] = item;
       }
       return [item, {}];
@@ -213,8 +213,8 @@ function MemoryAdapter(opts) {
    */
   this._updateMany = function (resource, records, options) {
     addMetaForResource(resource);
-    var self = this;
-    var tasks = [];
+    var self  = this,
+        tasks = [];
     records.forEach(function (record) {
       tasks.push(self.update(resource, record[resource.idAttribute], record, options));
     });
@@ -271,11 +271,11 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadBelongsTo = function (mapper, def, records, __opts) {
     var self = this,
-    singular = false;
+        singular = false;
 
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
       singular = true;
@@ -338,7 +338,7 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasMany = function(mapper, def, records, __opts) {
     var self  = this,
@@ -400,11 +400,11 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasManyLocalKeys = function(mapper, def, records, __opts) {
-    var self       = this;
-    var relatedMapper = def.getRelation();
+    var self          = this,
+        relatedMapper = def.getRelation();
 
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
       records = [records];
@@ -464,13 +464,11 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasManyForeignKeys = function(mapper, def, records, __opts) {
-    var self = this;
-
-    var relatedMapper = def.getRelation();
-    var idAttribute   = mapper.idAttribute;
+    var self = this,
+        relatedMapper = def.getRelation();
 
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
       records = [records];
@@ -506,9 +504,9 @@ function MemoryAdapter(opts) {
         })
         return Promise.all(p)
         .then(function (relatedItems) {
-          for ( var i in records ) {
-            def.setLocalField(records[i], relatedItems[i]);
-          }
+          Object.keys(records).forEach(function(key) {
+            def.setLocalField(records[key], relatedItems[key]);
+          });
         });
       }
     }
@@ -520,7 +518,7 @@ function MemoryAdapter(opts) {
    * @param {*} mapper 
    * @param {*} def 
    * @param {*} records 
-   * @param {*} ___opts 
+   * @param {*} __opts 
    */
   this.loadHasOne = function(mapper, def, records, __opts) {
     if (JSData.utils.isObject(records) && !JSData.utils.isArray(records)) {
