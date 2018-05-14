@@ -1,6 +1,6 @@
 {
   "name": "js-data-memory",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "In-memory adapter for js-data.",
   "main": "./js-data-memory.js",
   "scripts": {
