@@ -18,7 +18,7 @@
   "homepage": "https://github.com/trackthis/js-data-memory#readme",
   "dependencies": {
     "js-data": "^3.0.1",
-    "js-data-adapter": "^0.8.5"
+    "js-data-adapter": "^1.0.1"
   },
   "devDependencies": {
     "clover": "0.0.1",
